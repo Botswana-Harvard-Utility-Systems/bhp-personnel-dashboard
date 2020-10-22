@@ -1,0 +1,113 @@
+{% extends 'bhp_personnel_dashboard/base.html' %}
+
+
+{% block extra-styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<style>
+.my-card
+{
+    position:absolute;
+    left:40%;
+    top:-20px;
+    border-radius:50%;
+}
+</style>
+{% endblock extra-styles %}
+
+{% block main %}
+<div class="jumbotron">
+<div class="row w-100">
+        <div class="col-md-3">
+            <div class="card border-info mx-sm-1 p-3">
+                <div class="card border-info shadow text-info p-3 my-card" ><span  aria-hidden="true"></span></div>
+                <div class="text-info text-center mt-3"><h4>Total staff/PI/Consultats</h4></div>
+                <div class="text-info text-center mt-2"><h1>{{total	}}</h1></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success mx-sm-1 p-3">
+                <div class="card border-success shadow text-success p-3 my-card"><span  aria-hidden="true"></span></div>
+                <div class="text-success text-center mt-3"><h4>Total employees</h4></div>
+                <div class="text-success text-center mt-2"><h1>{{employees_total}}</h1></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger mx-sm-1 p-3">
+                <div class="card border-danger shadow text-danger p-3 my-card" ><span aria-hidden="true"></span></div>
+                <div class="text-danger text-center mt-3"><h4>Total PIs</h4></div>
+                <div class="text-danger text-center mt-2"><h1>{{pi_total}}</h1></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning mx-sm-1 p-3">
+                <div class="card border-warning shadow text-warning p-3 my-card" ><span  aria-hidden="true"></span></div>
+                <div class="text-warning text-center mt-3"><h4>Total Consultants</h4></div>
+                <div class="text-warning text-center mt-2"><h1>{{consultant_total}}</h1></div>
+            </div>
+        </div>
+     </div>
+</div>
+<div class="row">
+
+<aside class="col-sm-3">
+<div class="card">
+	<article class="card-group-item">
+		<header class="card-header"><h6 class="title">Overall Contract stats </h6></header>
+		<div class="filter-content">
+			<div class="list-group list-group-flush">
+			  <a href="#" class="list-group-item">Active Contracts <span class="float-right badge badge-light round">{{active_contracts}}</span> </a>
+			  <a href="#" class="list-group-item">Completed contracts  <span class="float-right badge badge-light round">{{completed_contracts}}</span>  </a>
+			  <a href="#" class="list-group-item">Due Contracts <span class="float-right badge badge-light round">0</span>  </a>
+			</div>  <!-- list-group .// -->
+		</div>
+	</article> <!-- card-group-item.// -->
+</div> <!-- card.// -->
+</aside> <!-- col.// -->
+
+
+<aside class="col-sm-3">
+<div class="card">
+	<article class="card-group-item">
+		<header class="card-header"><h6 class="title">Pi contracts </h6></header>
+		<div class="filter-content">
+			<div class="list-group list-group-flush">
+			  <a href="{% url pi_contract_listboard_url %}" class="list-group-item">PI contracts <span class="float-right badge badge-light round">{{pi_contracts}}</span></a>
+			  <a href="{% url pi_contract_listboard_url %}" class="list-group-item">PI active contracts <span class="float-right badge badge-light round">{{active_pis}}</span></a>
+			  <a href="{% url pi_contract_listboard_url %}" class="list-group-item">PI completed contracts <span class="float-right badge badge-light round">{{pi_completed}}</span></a>
+			</div>  <!-- list-group .// -->
+		</div>
+	</article> <!-- card-group-item.// -->
+</div> <!-- card.// -->
+</aside> <!-- col.// -->
+
+<aside class="col-sm-3">
+<div class="card">
+	<article class="card-group-item">
+		<header class="card-header"><h6 class="title">Employee contracts</h6></header>
+		<div class="filter-content">
+			<div class="list-group list-group-flush">
+			  <a href="{% url emp_contract_listboard_url %}" class="list-group-item">Employee contracts <span class="float-right badge badge-light round">{{employee_contracts}}</span> </a>
+			  <a href="{% url emp_contract_listboard_url %}" class="list-group-item">Employee active contracts  <span class="float-right badge badge-light round">{{active_employees}}</span></a>
+			  <a href="{% url emp_contract_listboard_url %}" class="list-group-item">Employee completed contracts <span class="float-right badge badge-light round">{{employee_completed}}</span></a>
+			</div>  <!-- list-group .// -->
+		</div>
+	</article> <!-- card-group-item.// -->
+</div> <!-- card.// -->
+</aside> <!-- col.// -->
+
+<aside class="col-sm-3">
+<div class="card">
+	<article class="card-group-item">
+		<header class="card-header"><h6 class="title">Consultant contracts</h6></header>
+		<div class="filter-content">
+			<div class="list-group list-group-flush">
+			  <a href="{% url consultant_contract_listboard_url %}" class="list-group-item">Consultant contracts <span class="float-right badge badge-light round">{{consultant_contracts}}</span> </a>
+			  <a href="{% url consultant_contract_listboard_url %}" class="list-group-item">Consultant active contracts  <span class="float-right badge badge-light round">{{active_consultants}}</span></a>
+			  <a href="{% url consultant_contract_listboard_url %}" class="list-group-item">Consultant completed contracts <span class="float-right badge badge-light round">{{consultant_completed}}</span></a>
+			</div>  <!-- list-group .// -->
+		</div>
+	</article> <!-- card-group-item.// -->
+</div> <!-- card.// -->
+</aside> <!-- col.// -->
+
+{% endblock main %}

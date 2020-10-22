@@ -1,0 +1,41 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Personnel Identifier</th>
+    <th>Owner Name</th>
+    <th>Duration</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Status</th>
+    <th>Modified</th>
+    <th>Host</th>
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap;">
+    <div class="btn-group">
+
+    </div>
+    </td>
+{% endblock listboard_table_button_column %}		
+
+
+{% block listboard_table_columns %}
+
+    <td>{{ result.identifier }} </td>
+    <td>{{ result.personnel_name }}</td>
+    <td nowrap>{{ result.duration }}</td>
+    <td nowrap>{{ result.start_date }}</td>
+    <td nowrap>{{ result.end_date }}</td>
+    <td nowrap>{{ result.status }}</td>
+    <td nowrap>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>  
+    <td nowrap>{{ result.hostname_created }}</td>
+
+{% endblock listboard_table_columns %}

@@ -1,0 +1,52 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+{% load bhp_personnel_dashboard_extras %}
+             
+{% block listboard_panel %}
+    <a id="consultant_add" title="add consultant" class="btn btn-sm btn-default" role="button" 
+        href="{{ consultant_add_url }}?next={{ consultant_listboard_url }}">
+            <i class="fa fa-plus fa-sm"></i> Add Consultant
+    </a>
+{% endblock listboard_panel %}
+
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Consultant Identifier</th>
+    <th>Consultant Name</th>
+    <th>Email</th>
+    <th>Modified</th>
+    <th>Host</th>
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap;">
+    <div class="btn-group">
+    {% edit_details_button result %}
+     <a id="btn-contract" class="btn btn-primary btn-sm" role="button"
+     title="add_contract" href="{{result.contract_model_obj.href }}">
+     <i class="far fa-user-circle fa-sm"></i> Contract  <i class="fa fa-share"></i></a>
+
+    {% if result.contract_model_obj %}
+     <a id="btn-dashboard" class="btn btn-success btn-sm" role="button"
+     title="add_dashboard" href="{% url consultant_dashboard_url result.identifier %}">
+     <i class="far fa-user-circle fa-sm"></i> Dashboard  <i class="fa fa-share"></i></a>
+    {% endif %}
+    </div>
+    </td>
+{% endblock listboard_table_button_column %}		
+
+
+{% block listboard_table_columns %}
+
+    <td>{{ result.identifier }} </td>
+    <td nowrap>{{ result.first_name }} {{ result.middle_name }} {{ result.last_name }}</td>
+    <td nowrap>{{ result.email }}</td>
+    <td nowrap>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>  
+    <td nowrap>{{ result.hostname_created }}</td>
+
+{% endblock listboard_table_columns %}

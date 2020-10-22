@@ -1,0 +1,12 @@
+git+https://github.com/botswana-harvard/edc-base@develop#egg=edc-base
+git+https://github.com/botswana-harvard/django-revision@develop#egg=django-revision
+git+https://github.com/botswana-harvard/django-crypto-fields.git@develop#egg=django_crypto_fields
+git+https://github.com/botswana-harvard/edc-constants.git@develop#egg=edc_constants
+git+https://github.com/botswana-harvard/edc-device.git@develop#egg=edc_device
+git+https://github.com/botswana-harvard/edc-subject-dashboard.git@0.1.11#egg=edc-subject-dashboard
+git+https://github.com/botswana-harvard/edc-model-wrapper.git@0.1.7#egg=edc-model-wrapper
+git+https://github.com/botswana-harvard/edc-search.git@develop#egg=edc_search
+git+https://github.com/botswana-harvard/edc-model-admin.git@develop#egg=edc_model_admin
+git+https://github.com/botswana-harvard/edc-dashboard.git@develop#egg=edc_dashboard
+git+https://github.com/botswana-harvard/edc-navbar@develop#egg=edc-navbar
+mysqlclient
