@@ -8,28 +8,14 @@ from edc_dashboard import UrlConfig
 
 from .patterns import identifier
 from .views import (
-    ContractListBoardView, ConsultantListBoardView, EmployeeListBoardView,
+    ConsultantListBoardView, EmployeeListBoardView,
     PiListBoardView, DashboardView, PiDashboardView, ConsultantDashboardView,
     HomeView)
-from .views.contract import (
-    ConsultantContractListBoardView, EmployeeContractListboardView,
-    PiContractListBoardView)
+from .views import action_views
+
 
 app_name = 'bhp_personnel_dashboard'
 
-contract_listboard_url_config = UrlConfig(
-    url_name='contract_listboard_url',
-    view_class=ContractListBoardView,
-    label='contract_listboard',
-    identifier_label='identifier',
-    identifier_pattern=identifier)
-
-empcontract_listboard_url_config = UrlConfig(
-    url_name='emp_contract_listboard_url',
-    view_class=EmployeeContractListboardView,
-    label='employee_contracts_listboard',
-    identifier_label='identifier',
-    identifier_pattern=identifier)
 
 consultant_dashboard_url_config = UrlConfig(
     url_name='consultant_dashboard_url',
@@ -45,12 +31,6 @@ consultant_listboard_url_config = UrlConfig(
     identifier_label='identifier',
     identifier_pattern=identifier)
 
-consultant_contract_listboard_url_config = UrlConfig(
-    url_name='consultant_contract_listboard_url',
-    view_class=ConsultantContractListBoardView,
-    label='consultant_contracts_listboard',
-    identifier_label='identifier',
-    identifier_pattern=identifier)
 
 employee_dashboard_url_config = UrlConfig(
     url_name='employee_dashboard_url',
@@ -80,25 +60,21 @@ pi_dashboard_url_config = UrlConfig(
     identifier_label='identifier',
     identifier_pattern=identifier)
 
-pi_contract_dashboard_url_config = UrlConfig(
-    url_name='pi_contract_listboard_url',
-    view_class=PiContractListBoardView,
-    label='pi_contracts_listboard',
-    identifier_label='identifier',
-    identifier_pattern=identifier)
-
 urlpatterns = [
-    # path('dashboard/<identifier>', DashboardView.as_view(), name='dashboard_url'),
+    path('employee_listboard/<str:email>/toggle-active/',
+         action_views.toggle_active, name='employees_toggle_active'),
+    path('employee_listboard/<str:email>/resend-activation/',
+         action_views.resend_activation, name='employees_resend_activation'),
+    path('employee_listboard/<str:email>/send-reset/',
+         action_views.send_reset, name='employees_send_reset'),
+    path('employee_listboard/bulk/',
+         action_views.bulk_actions, name='employees_bulk'),
 ]
 
 urlpatterns += [path('personnel/', HomeView.as_view(), name='bhp_personnel_url')]
-urlpatterns += contract_listboard_url_config.listboard_urls
 urlpatterns += consultant_dashboard_url_config.dashboard_urls
-urlpatterns += consultant_contract_listboard_url_config.listboard_urls
 urlpatterns += consultant_listboard_url_config.listboard_urls
 urlpatterns += employee_dashboard_url_config.listboard_urls
 urlpatterns += employee_listboard_url_config.listboard_urls
-urlpatterns += empcontract_listboard_url_config.listboard_urls
 urlpatterns += pi_dashboard_url_config.dashboard_urls
 urlpatterns += pi_listboard_url_config.listboard_urls
-urlpatterns += pi_contract_dashboard_url_config.listboard_urls

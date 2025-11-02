@@ -15,7 +15,6 @@ class HomeView(EdcBaseViewMixin, NavbarViewMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         employees = Employee.objects.all()
         consultant = Consultant.objects.all()
-        contracts = Contract.objects.all()
         pi = Pi.objects.all()
 
         total = employees.count() + consultant.count() + pi.count()
