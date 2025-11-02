@@ -1,56 +1,121 @@
-{% extends "edc_dashboard/listboard.html" %}
+{% extends listboard_base_template %}
 {% load admin_urls %}
 {% load edc_base_extras %}
-{% load bhp_personnel_dashboard_extras %}
+{% load timesheet_dashboard_extras %}
+{% load edc_dashboard_extras %}
 
-{% block listboard_panel %}
-    <a id="employee_add" title="add employee" class="btn btn-sm btn-default" role="button"
-        href="{{ employee_add_url }}?next={{ employee_listboard_url }}">
-            <i class="fa fa-plus fa-sm"></i> Add Employee
-    </a>
-{% endblock listboard_panel %}
+{% block main %}
 
-{% block listboard_table_header %}
-    <!-- begin results header -->
-    <th>#</th>
-    <th></th>
-    <th>Employee Identifier</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Email</th>
-    <th>Job Title</th>
-    <th>Modified</th>
-    <th>Host</th>
-    <!-- end results header -->
-{% endblock listboard_table_header %}
-
-
-{% block listboard_table_button_column %}
-    <td style="white-space: nowrap;">
-    <div class="btn-group">
-    {% edit_details_button result %}
-     <a id="btn-contract" class="btn btn-primary btn-sm" role="button"
-     title="add_contract" href="{{result.contract_model_obj.href }}">
-     <i class="far fa-user-circle fa-sm"></i> Contract  <i class="fa fa-share"></i></a>
-
-     {% if result.contract_model_obj %}
-     <a id="btn-dashboard" class="btn btn-success btn-sm" role="button"
-     title="add_dashboard" href="{% url employee_dashboard_url result.identifier %}">
-     <i class="far fa-user-circle fa-sm"></i> Dashboard  <i class="fa fa-share"></i></a>
-     {% endif %}
+<div class="row g-3">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h1 class="h4 mb-0">Employees</h1>
+        <nav aria-label="breadcrumb" class="small">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="">Utilities</a></li>
+            <li class="breadcrumb-item active">Employees</li>
+          </ol>
+        </nav>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ employee_add_url }}?next={{ employee_listboard_url }}" class="btn btn-primary">
+        	<i class="bi bi-person-plus"></i> New Employee
+        </a>
+      </div>
+      {% block listboard_search_form %}
+        	{% include 'bhp_personnel_dashboard/search_form.html' %}
+      {% endblock listboard_search_form %}
     </div>
-    </td>
-{% endblock listboard_table_button_column %}
 
+    <div class="md-card">
+      <div class="card-body p-0">
 
-{% block listboard_table_columns %}
+        <form method="post" action="{% url 'bhp_personnel_dashboard:employees_bulk' %}">
+          {% csrf_token %}
+          <div class="table-responsive">
+            <table class="table table-hover small align-middle table-sm">
+              <thead class="table-primary">
+              	{% block listboard_table_header %}
+                <tr>
+                  <th style="width:36px"><input class="form-check-input" type="checkbox" id="checkAll"></th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th style="width:220px"></th>
+                </tr>
+                {% endblock listboard_table_header %}
+              </thead>
+              <tbody>
+              	{% block listboard_table_body %}
+	                {% for result in results %}
+	                <tr>
+	                  <td><input class="form-check-input" type="checkbox" name="emails" value="{{ result.email }}"></td>
+	                  <td>{{ result.employee_code }}</td>
+	                  <td>{{ result.object.get_fullname|default:result.email }}</td>
+	                  <td>{{ result.email }}</td>
+	                  <td>
+	                    {% if result.groups.all %}
+	                      {% if result.groups.all.0.name == 'HR' %}<span class="badge text-bg-dark">HR</span>
+	                      {% elif result.groups.all.0.name == 'Supervisor' %}<span class="badge text-bg-info">Supervisor</span>
+	                      {% else %}<span class="badge text-bg-secondary">Employee</span>{% endif %}
+	                    {% else %}<span class="badge text-bg-secondary">Employee</span>{% endif %}
+	                  </td>
+	                  <td>
+	                    {% if result.related_user.is_active %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Inactive</span>{% endif %}
+	                  </td>
+	                  <td class="text-end">
+	                    <div class="btn-group">
+	                      <a href="{{ result.href }}" class="btn btn-sm btn-outline-primary">Edit</a>
+	                      <a href="{% url 'bhp_personnel_dashboard:employees_toggle_active' result.email %}" class="btn btn-sm btn-outline-secondary">Toggle Active</a>
+	                      <a href="{% url 'bhp_personnel_dashboard:employees_send_reset' result.email %}" class="btn btn-sm btn-outline-warning">Send Reset</a>
+	                      <a href="{% url 'bhp_personnel_dashboard:employees_resend_activation' result.email %}" class="btn btn-sm btn-outline-info">Resend Activation</a>
+	                    </div>
+	                  </td>
+	                </tr>
+	                {% empty %}
+	                	<tr><td colspan="6" class="text-center text-secondary">No employees found.</td></tr>
+	                {% endfor %}
+	             {% endblock listboard_table_body %}
+              </tbody>
+            </table>
+          </div>
 
-    <td>{{ result.identifier }} </td>
-    <td nowrap>{{ result.employee_code }}</td>
-    <td nowrap>{{ result.first_name }} {{ result.middle_name }} {{ result.last_name }}</td>
-    <td nowrap>{{ result.email }}</td>
-    <td nowrap>{{ result.job_title }}</td>
-    <td nowrap>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>  
-    <td nowrap>{{ result.hostname_created }}</td>
+          {% if is_paginated %}
+          <div class="d-flex justify-content-end align-items-end p-2">
+            <div class="input-group" style="width: 360px;">
+              <select class="form-select" name="action" required>
+                <option value="" selected>Bulk Action…</option>
+                <option value="activate">Activate</option>
+                <option value="deactivate">Deactivate</option>
+                <option value="send_reset">Send Reset Email</option>
+                <option value="resend_activation">Resend Activation Email</option>
+              </select>
+              <button class="btn btn-outline-primary" type="submit">Apply</button>
+            </div>
+          </div>
+          {% endif %}
+        </form>
+      </div>
 
-{% endblock listboard_table_columns %}
+      {% if is_paginated %}
+      <div class="card-footer d-flex flex-column align-items-center">
+		{% paginator_row %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+	// simple select-all
+	const checkAll = document.getElementById('checkAll');
+	if (checkAll) {
+	  checkAll.addEventListener('change', (e) => {
+	    document.querySelectorAll('input[name="ids"]').forEach(cb => cb.checked = e.target.checked);
+	  });
+	}
+</script>
+{% endblock main %}

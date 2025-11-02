@@ -1,5 +1,4 @@
 from django.apps import apps as django_apps
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class EmployeeModelWrapperMixin:
@@ -32,7 +31,7 @@ class EmployeeModelWrapperMixin:
         """
         try:
             return self.employee_cls.objects.get(**self.employee_options)
-        except ObjectDoesNotExist:
+        except self.employee_cls.DoesNotExist:
             return None
 
     @property
