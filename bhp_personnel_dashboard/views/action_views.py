@@ -4,6 +4,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
+from ..email_csv import EmailCSVForm, SESSION_KEY
 
 from bhp_personnel.utils import send_employee_activation
 
@@ -18,14 +22,15 @@ def is_hr(user):
 
 @login_required
 @user_passes_test(is_hr)
+@require_POST
 def toggle_active(request, email):
+    active = request.POST.get('active')
+    if active not in ('true', 'false'):
+        return JsonResponse({'error': 'Choose an active or inactive state.'}, status=400)
     user = get_object_or_404(User, email=email)
-    user.is_active = not user.is_active
+    user.is_active = active == 'true'
     user.save(update_fields=['is_active'])
-    messages.info(
-        request,
-        f'{user.get_full_name() or user.email}: Active set to {user.is_active}.')
-    return redirect('bhp_personnel_dashboard:employee_listboard_url')
+    return JsonResponse({'is_active': user.is_active})
 
 
 @login_required
@@ -90,4 +95,28 @@ def bulk_actions(request):
     messages.success(
         request,
         f"Bulk action '{action}' applied to {count} users.")
+    return redirect('bhp_personnel_dashboard:employee_listboard_url')
+
+
+@login_required
+@user_passes_test(is_hr)
+@require_POST
+def upload_email_filter(request):
+    form = EmailCSVForm(request.POST, request.FILES)
+    if form.is_valid():
+        request.session[SESSION_KEY] = form.cleaned_data['email_csv']
+        messages.success(request, 'CSV loaded. Review the matching employees, select rows, then choose a bulk action.')
+    else:
+        for errors in form.errors.values():
+            for error in errors:
+                messages.error(request, error)
+    return redirect('bhp_personnel_dashboard:employee_listboard_url')
+
+
+@login_required
+@user_passes_test(is_hr)
+@require_POST
+def clear_email_filter(request):
+    request.session.pop(SESSION_KEY, None)
+    messages.info(request, 'Email CSV filter cleared.')
     return redirect('bhp_personnel_dashboard:employee_listboard_url')

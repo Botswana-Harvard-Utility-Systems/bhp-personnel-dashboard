@@ -5,9 +5,9 @@
 {% comment %} {% include 'edc_dashboard/search_form.html' %} {% endcomment %}
 <form method="get" action="{% if search_form_url_reversed %}{{ search_form_url_reversed }}{% endif %}" class="d-flex gap-2" id="form-search">
 
-	<input class="form-control form-control-sm" id="id_q" maxlength="150" name="q" placeholder="Search..." type="text" value="{{ q|default:'' }}" />
+	<input class="form-control form-control-sm" id="id_q" maxlength="150" name="q" placeholder="Search employees…" aria-label="Search employees" type="text" value="{{ q|default:'' }}" />
 	
-	<button  type="submit" class="btn btn-sm btn-outline-primary">
+	<button  type="submit" class="btn btn-sm btn-outline-secondary" aria-label="Search">
 		<i class="bi bi-search"></i>
 	</button>
 
