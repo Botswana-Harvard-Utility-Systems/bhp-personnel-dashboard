@@ -61,6 +61,10 @@ pi_dashboard_url_config = UrlConfig(
     identifier_pattern=identifier)
 
 urlpatterns = [
+    path('employee_listboard/upload-emails/',
+         action_views.upload_email_filter, name='employees_upload_emails'),
+    path('employee_listboard/clear-emails/',
+         action_views.clear_email_filter, name='employees_clear_emails'),
     path('employee_listboard/<str:email>/toggle-active/',
          action_views.toggle_active, name='employees_toggle_active'),
     path('employee_listboard/<str:email>/resend-activation/',
